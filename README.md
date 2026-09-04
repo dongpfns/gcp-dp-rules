@@ -58,8 +58,8 @@ GCS / BigQuery / Workflows などGCPネイティブサービスでデータ基�
 
 | ディレクトリ | 変換基盤 | リポジトリ構成 |
 | :--- | :--- | :--- |
-| [`../gcp-dp-demo/`](../gcp-dp-demo/) | **dbt on Cloud Run Jobs**（`enable_dbt` で無効化も可能） | モノレポ1本 |
-| [`../gcp-dp-dataform-demo/`](../gcp-dp-dataform-demo/) | **Dataform** | インフラ用 + Dataform専用（切り出し必須） |
+| [`../gcp-dp-demo/`](https://github.com/dongpfns/gcp-dp-demo/) | **dbt on Cloud Run Jobs**（`enable_dbt` で無効化も可能） | モノレポ1本 |
+| [`../gcp-dp-dataform-demo/`](https://github.com/dongpfns/gcp-dp-dataform-demo/) | **Dataform** | インフラ用 + Dataform専用（切り出し必須） |
 
 取込（Cloud Run Jobs / Cloud Functions）・オーケストレーション（Workflows / Scheduler）・
 インフラ（Terraform）・CI/CDの骨格は両者で共通で、**変換層だけが異なる**。
