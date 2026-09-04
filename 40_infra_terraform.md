@@ -170,3 +170,31 @@ provider "google" {
 | `logging.googleapis.com` / `monitoring.googleapis.com` | ログ・監視 |
 
 * `disable_on_destroy = false` を設定する（`terraform destroy` で他システムのAPIまで止めないため）。
+
+**API有効化の伝播（初回applyが落ちる原因）**
+
+APIの有効化はGCP側の伝播に数十秒かかる。同一の `apply` の中で「有効化」と
+「そのAPIを使うリソースの作成」が並ぶと、`depends_on` を書いても伝播が間に合わず、
+`API has not been used in project ... before or it is disabled` で**初回applyが必ず落ちる**。
+`google_project_service` を書いただけでは足りない。
+
+1. **ブートストラップスクリプトで先に有効化し、実際に有効になったことを確認してから** `terraform apply` を行う。
+   `gcloud services enable` は戻ってきても使えるようになったとは限らないため、
+   `gcloud services list --enabled` で全件が見えるまでポーリングする。
+2. **APIリストは1つのファイルを正とし、スクリプトとTerraformの両方がそれを読む。**
+   両方に列挙する二重管理は、必ずどちらかが古くなる。
+
+   ```hcl
+   # main.tf : required-apis.txt を単一の正として読む
+   locals {
+     required_apis = [
+       for line in split("\n", file("${path.module}/required-apis.txt")) :
+       trimspace(line)
+       if trimspace(line) != "" && !startswith(trimspace(line), "#")
+     ]
+   }
+   ```
+
+3. Terraform側の `google_project_service` は、**宣言的な正・ドリフト検知の起点として残す**（削除しない）。
+4. まだ使うリソースが存在しないAPIを先回りで有効化しない。
+   有効化はそのAPIを使うリソースを追加するPRで、同じPRの中で行う。

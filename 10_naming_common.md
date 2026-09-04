@@ -37,7 +37,7 @@
 | :--- | :--- | :--- |
 | `cd`（コード値） | `code`, `kbn`, `type_code` | `_cd` に統一 |
 | `id`（識別子） | `no`, `key`, `seq_no`, `number` | 単独の `id` も禁止（必ず `{entity}_id`） |
-| `qty`（数量） | `quantity`, `count`（集計値は `_count` 可） | |
+| `qty`（数量） | `quantity` | 個数・重量・体積などの「量」。**件数は `_count` を使う**（`11` 章4.1） |
 | `amt`（金額） | `amount`, `price`（単価は `unit_price_`） | 通貨サフィックス必須 |
 | `nm` は使わない → `name` | `nm`, `title`（表示名は `_display_name`） | |
 | `dt` は使わない → `_at_utc` / `_at_jst` / `_date` | `dt`, `datetime`, `timestamp` | 日付のみは `_date` |
@@ -75,7 +75,8 @@
 | 接尾 | `_utc` / `_jst` | タイムゾーン | 日時カラム |
 | 接尾 | `_date` | 日付（時刻を持たない） | カラム |
 | 接尾 | `_kg` / `_ton` / `_jpy` / `_jpy_per_kg` | 単位 | 数値カラム |
-| 接尾 | `_rate` / `_yoy` / `_diff` / `_count` | 派生指標 | GOLDカラム |
+| 接尾 | `_rate` / `_yoy` / `_diff` | 派生指標 | GOLDカラム |
+| 接尾 | `_count` | 件数 | GOLDの派生指標。ソースが属性として持つ件数はSILVERでも可（`11` 章4.1） |
 
 ## 6. 全体で禁止すること
 

@@ -26,6 +26,13 @@ BigQuery以外のGCPリソース名は全て **`kebab-case`（全小文字・ハ
 | ログシンク | `sink-{用途}` | `sink-bq-audit` |
 | 通知チャネル | `nc-{手段}-{宛先}` | `nc-email-dataplatform` |
 | アラートポリシー | `alert-{対象}-{条件}` | `alert-wf-main-daily-failure` |
+| IAM カスタムロール | `{prefix}{役割}`（**lowerCamelCase**・下記の例外） | `dpTransferRunner` |
+
+> **例外: IAMカスタムロール**
+> カスタムロールの `role_id` に使えるのは英数字・アンダースコア・ピリオドのみで、**ハイフンが使えない**。
+> 「BigQueryの外は `kebab-case`」の原則を適用できないため、**lowerCamelCase** を用いる。
+> `{prefix}` はシステム内で統一する（例: `dp` = data platform）。
+> 既定ロールが広すぎる場合にだけ作る。まず既定ロールで足りないかを確認すること（`30` 章1節）。
 
 ## 2. フォルダ名とリソース名の対応（最重要）
 

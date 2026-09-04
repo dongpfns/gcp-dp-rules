@@ -103,6 +103,10 @@ DDLの発行手段（Terraform / Dataform / dbt / 直接SQL）によらず、成
 
 * **数値・金額列**: 単位サフィックス必須（kgとtonの取り違え防止）。複合単位は `{量}_{通貨/単位}_per_{単位}`。
   例: `stock_volume_kg`, `capacity_ton`, `unit_price_jpy_per_kg`
+* **件数列**: 集計して生成した件数はGOLDで `_count`（4.3）。
+  **ソース側が属性として保持している件数**（Salesforce `NumberOfEmployees` 等）は、
+  集計ではないため**SILVERでも `_count` を使ってよい**（`employee_count`）。
+  `qty`（数量）は個数・重量などの「量」を指し、件数とは区別する（`10` 章3節）。
 * **型の既定**: 整数は `INT64`、小数は原則 `NUMERIC`（金額・数量に `FLOAT64` を使わない）、文字列は `STRING`。真偽値は `BOOL`。
 * **`description` 必須**: SILVER/GOLDの全列に日本語で意味・単位・取りうる値を書く。BigQueryのスキーマがデータカタログの正となる。
 * **`REQUIRED`（NOT NULL）** は主キーとパーティション列に必ず設定する。
@@ -130,6 +134,7 @@ DDLの発行手段（Terraform / Dataform / dbt / 直接SQL）によらず、成
 3. **UTC統一**。JST変換は表示側（ビュー）でのみ行う。
 4. 差分処理の基準列は `etl_updated_at`。
 5. **実行単位でタイムスタンプを1回だけ確定する**。単一ステートメント内の `CURRENT_TIMESTAMP()` は同一値だが、**ステートメントを跨ぐとずれる**。複数ステートメント構成では直書きを禁止し、実行単位で確定した値（変数／コンパイル変数）を参照する（`21` 章）。
+6. **連携ツールがBRONZEのシステム列を付与しない場合**（BigQuery DTS など、GCSを経由しないマネージド転送）、`_bronze_ingested_at` / `_bronze_source_uri` を無理に自前で作らない。取込時刻と実行元の追跡は `ops_{purpose}` の実行履歴テーブルとSILVERの `etl_*` で担保し、**BRONZE監査項目を持たないことと、その代替手段を設計書に明記する**。
 
 ### 4.3 派生指標のレイヤー方針
 
